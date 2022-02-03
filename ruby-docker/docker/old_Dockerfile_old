@@ -1,0 +1,10 @@
+FROM ruby:2.3.7
+ARG KEY_ID=37C7086698CB005C
+ARG SNOW_VERSION=2.24.4
+RUN apt-get update && apt-get install -y wget unixodbc unixodbc-dev debsig-verify && \
+    gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys $KEY_ID && \
+    curl --fail -L -o /tmp/snowflake-odbc-$SNOW_VERSION.x86_64.deb https://sfc-repo.snowflakecomputing.com/odbc/linux/$SNOW_VERSION/snowflake-odbc-$SNOW_VERSION.x86_64.deb && \
+    dpkg -i /tmp/snowflake-odbc-$SNOW_VERSION.x86_64.deb && rm  /tmp/snowflake-odbc-$SNOW_VERSION.x86_64.deb && \
+    printf 'Package: *\nPin: origin deb.nodesource.com\nPin-Priority: 600' > /etc/apt/preferences.d/nodesource && \
+    wget -qO - https://deb.nodesource.com/setup_16.x | bash && \
+    apt-get install nodejs git libxss1 -y && apt-get clean && gem install ruby-odbc -v '0.999991' && gem install odbc_adapter -v '~> 4.2.3'

@@ -1,0 +1,1 @@
+docker run --rm -ti -v ../code:/data ruby-docker bash
